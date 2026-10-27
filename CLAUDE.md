@@ -17,28 +17,32 @@ Read the cited section before changing anything that references one.
 
 ## The `@hushjot/core` dependency
 
-`package.json` declares `"@hushjot/core": "file:../hushjot/dist-core"` — a build artifact emitted
-by the app repo's `npm run build:core`, not a published package. **It is not vendored and must
-never be reimplemented here.** `deriveTitle`, `noteMetaJson`, `excerptOf`, the envelope and the
+`package.json` declares `"@hushjot/core": "^0.4.0"` — the package the app repo's
+`npm run build:core` emits, published to npm. **It is not vendored and must never be
+reimplemented here.** `deriveTitle`, `noteMetaJson`, `excerptOf`, the envelope and the
 tokeniser all come from core, because a second implementation of any of them would work
 perfectly and disagree silently: a title derived differently is written to the account, read
 back by the app, and nothing anywhere reports a problem.
 
-One thing about the checkout, because it is not obvious:
+Two things about the checkout, because they are not obvious:
 
-- The app is cloned beside this repo as **`../hushjot/`**, and `node_modules/@hushjot/core` is a
-  symlink to its `dist-core`. If core resolves to something stale or missing, rebuild with
-  `npm run build:core` there. A new export the CLI needs is added to the app's
-  `src/core/public.ts` first — that list is the API.
+- **Never commit a `file:` spec for core.** It was one until 0.1.0, which was published with it
+  and could not be installed anywhere else; `tools/guard-publish.mjs` now refuses it. To develop
+  against unreleased core changes, build them in **`../hushjot/`** (`npm run build:core`) and
+  `npm install ../hushjot/dist-core --no-save`; `npm ci` puts the registry copy back. A new export
+  the CLI needs is added to the app's `src/core/public.ts` first — that list is the API — and
+  needs a core release before a CLI release can use it.
 - `dist-core` also ships **`contract/`** — `firestore.rules` and `format-vectors.json` — and the
   tests consume them from the *installed package* rather than from a copy here, deliberately.
   `tests/emulator/firestore.rules` is gitignored and written by `tests/integration/run.mjs` on
   every run for exactly that reason: there must be one source of truth for the rules, and it is
-  the app repo.
+  the app repo. So against the registry core, the integration test runs the rules *as published*,
+  not the app checkout's live file.
 
 A change to stored bytes in the app — the envelope, `noteMetaJson`'s omission rules,
 `deriveTitle`, `excerptOf`, the tokeniser — moves `FORMAT_VERSION` and means this package needs
-a release. A change to `firestore.rules` reaches the integration test here immediately.
+a release. A change to `firestore.rules` reaches the integration test here once core is
+reinstalled from the checkout (above) or released.
 
 ## Commands
 
@@ -74,11 +78,6 @@ installed. `tsconfig.build.json` flips `noEmit` off into `dist/`, and the base c
 which is precisely why the explicit extensions above are load-bearing rather than noise. `bin`
 points at `dist/bin/hushjot.js`, and `prepare` builds, so `npm link` and any install get a
 working binary. Still no bundler: it is `tsc` and nothing else.
-
-The public repository is written from a private working copy by `npm run export:public -- <dir>`,
-which exports `HEAD` without `private/` (`tools/export-public.mjs`) and fails if any word in
-`private/export-forbidden.txt` appears in the result. Anything that must never be published goes
-in `private/`.
 
 `test:integration` starts its own emulators via `emulators:exec`, so nothing needs to be running
 first. Its ports are **9099/8086**, chosen so a running `npm run emulators` in the app checkout

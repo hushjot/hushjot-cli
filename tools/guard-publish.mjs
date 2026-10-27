@@ -14,17 +14,29 @@
  * version number can never be reused, and anything that was in the tarball has
  * been distributed. That asymmetry is why the default is no.
  */
+import { readFileSync } from 'node:fs';
+
 if (process.env.HUSHJOT_RELEASE !== '1') {
   console.error('');
   console.error('  Refusing to publish: releases are gated.');
   console.error('');
-  console.error('  Nothing in this project has ever been published to npm, and');
-  console.error('  publishing is meant to be a deliberate, authorised act.');
+  console.error('  Releases are cut by the maintainers, on purpose.');
+  console.error('  To publish deliberately:  HUSHJOT_RELEASE=1 npm publish');
   console.error('');
-  console.error('  Read private/RELEASING.md first — there are unresolved');
-  console.error('  blockers that would make a published package broken.');
+  process.exit(1);
+}
+
+// npm publishes a `file:` or `link:` dependency without a word, and it resolves
+// on no machine but the one it was published from, so the package would not
+// install anywhere else. Nothing else in the publish path catches it.
+const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+const local = Object.entries(pkg.dependencies ?? {})
+  .filter(([, spec]) => /^(file|link|portal):/.test(spec));
+if (local.length > 0) {
   console.error('');
-  console.error('  To authorise:  HUSHJOT_RELEASE=1 npm publish');
+  console.error('  Refusing to publish: a dependency points at this machine.');
+  for (const [name, spec] of local) console.error(`    ${name}: ${spec}`);
+  console.error('  Repoint it at a published version range first.');
   console.error('');
   process.exit(1);
 }

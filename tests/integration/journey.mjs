@@ -154,10 +154,10 @@ async function dumpNotes(uid) {
 
 /**
  * Swap the emulator's rules, as a deploy (or the kill switch) would. The
- * lockdown ruleset is the app's `private/killswitch/lockdown.rules` in
- * substance: refuse everything, allow a `get` of the sentinel. It is written
- * out here because that file is private to the app repository; the sentinel
- * path itself comes from the published core, so the two cannot drift apart.
+ * lockdown ruleset is the kill switch's in substance: refuse everything, allow
+ * a `get` of the sentinel. It is written out here because that ruleset is not
+ * published; the sentinel path itself comes from the published core, so the
+ * two cannot drift apart.
  */
 async function setRules(content) {
   const response = await fetch(`http://${FIRESTORE_HOST}/emulator/v1/projects/${PROJECT}:securityRules`, {

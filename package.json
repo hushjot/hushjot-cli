@@ -1,6 +1,6 @@
 {
   "name": "@hushjot/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Read and write your end-to-end encrypted HushJot notes from the terminal, and from an agent over MCP. The key never leaves your machine.",
   "license": "AGPL-3.0-only",
   "author": "Nebulosa d'Ideias Unipessoal Lda.",
@@ -33,11 +33,10 @@
     "prepare": "npm run build",
     "local": "npm run build && npm link",
     "unlink": "npm unlink -g @hushjot/cli",
-    "export:public": "node tools/export-public.mjs",
     "prepublishOnly": "node tools/guard-publish.mjs"
   },
   "dependencies": {
-    "@hushjot/core": "file:../hushjot/dist-core",
+    "@hushjot/core": "^0.4.0",
     "@modelcontextprotocol/sdk": "^1.32.2"
   },
   "devDependencies": {
