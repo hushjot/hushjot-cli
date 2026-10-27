@@ -63,7 +63,7 @@ To build it from source instead, check it out beside a checkout of the app,
 whose `@hushjot/core` it is built against:
 
 ```bash
-git clone https://github.com/hushjot/hushjot
+git clone https://github.com/hushjot/hushjot-app hushjot
 git clone https://github.com/hushjot/hushjot-cli
 cd hushjot && npm ci && npm run build:core
 cd ../hushjot-cli

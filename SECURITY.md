@@ -15,7 +15,7 @@ with it. You will get a reply within a few days.
 In scope: this CLI and its MCP server, including folder scoping, the
 read-only mode, and how secrets are kept in the OS keychain. The encryption
 format and the Firestore rules belong to
-[the app](https://github.com/hushjot/hushjot); report those there.
+[the app](https://github.com/hushjot/hushjot-app); report those there.
 
 Out of scope:
 

@@ -81,7 +81,7 @@ To update later, run `npm update -g @hushjot/cli`.
 
 ```bash
 cd path/to
-git clone https://github.com/hushjot/hushjot
+git clone https://github.com/hushjot/hushjot-app hushjot
 git clone https://github.com/hushjot/hushjot-cli
 
 cd hushjot
