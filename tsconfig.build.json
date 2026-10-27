@@ -1,0 +1,22 @@
+{
+  // Emit `dist/` for installation. Development and the tests keep running the
+  // TypeScript in `src/` directly under Node, so this config exists only for
+  // the moment the CLI has to live somewhere other than this checkout.
+  //
+  // The base config sets `allowImportingTsExtensions` — normally incompatible
+  // with emit — alongside `rewriteRelativeImportExtensions`, which rewrites the
+  // `.ts` specifiers to `.js` on the way out. That pairing is why every import
+  // in `src/` can keep its explicit `.ts` extension and still compile to
+  // something a plain Node can run.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist",
+    // Explicit since TypeScript 6, which no longer infers it from the inputs.
+    // `src` keeps the layout `bin` depends on: `src/bin/x.ts` → `dist/bin/x.js`.
+    "rootDir": "src",
+    "sourceMap": true
+  },
+  // Tests are excluded deliberately: they exercise `src/`, not `dist/`.
+  "include": ["src/**/*.ts"]
+}

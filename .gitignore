@@ -1,0 +1,13 @@
+node_modules/
+*.local
+.DS_Store
+tests/emulator/firestore.rules
+tests/emulator/firestore-debug.log
+tests/emulator/*-debug.log
+.idea/
+.vscode/
+.env
+.env.*
+
+# Build output; produced by npm run build
+dist/
